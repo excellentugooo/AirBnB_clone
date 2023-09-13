@@ -37,7 +37,7 @@ class FileStorage():
                 desrialize = json.load(f)
                 for i in desrialize.values():
                     cls = i["__class__"]
-                    del o["__class__"]
+                    del i["__class__"]
                     self.new(eval(cls)(**i))
 
         except (FileNotFoundError):
