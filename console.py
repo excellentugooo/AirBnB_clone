@@ -118,6 +118,26 @@ class HBNBCommand(cmd.Cmd):
             print("** attribute name missing **")
         elif len(args) < 4:
             print("** value missing **")
+        else:
+            key = args[0] + "." + args[1]
+            dic_t = storage.all()[key]
+
+            attr_val= args[3]
+            if attr_val[0] == '"':
+                attr_val = attr_val[1:-1]
+
+            if hasattr(dic_t, args[2]):
+                typ = type(getattr(dic_t, args[2]))
+                if typ in [str, float, int]:
+                    attr_val = typ(attr_val)
+                    setattr(dic_t, args[2], attr_val)
+            else:
+                setattr(dic_t, args[2], attr_val)
+                storage.save
+
+    
+
+    def default
         
 
 if __name__ == '__main__':
