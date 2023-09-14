@@ -135,9 +135,17 @@ class HBNBCommand(cmd.Cmd):
                 setattr(dic_t, args[2], attr_val)
                 storage.save
 
-    
-
-    def default
+    def default(self, arg):
+        args = arg.split('.')
+        if args[0] in self.__classes:
+            if args[1] == "all()":
+                self.do_all(args[0])
+            elif args[1] == "count()":
+                count = [v for k, v in storage.all().items() if k.startswith(args[0])]
+                print(len(count))
+            elif args[1].startwith("show"):
+                id_show = args[1].split('"')[1]
+                self.do_show(f"{args[0]} {id_show}")
         
 
 if __name__ == '__main__':
