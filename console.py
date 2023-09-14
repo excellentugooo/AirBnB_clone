@@ -146,6 +146,14 @@ class HBNBCommand(cmd.Cmd):
             elif args[1].startwith("show"):
                 id_show = args[1].split('"')[1]
                 self.do_show(f"{args[0]} {id_show}")
+            elif args[1].startwith("destroy"):
+                id_destroy = args[1].split('"')[1]
+                self.do_destroy(f"{args[0]} {id_destroy}")
+            elif args[1].startwith("update"):
+                id_update = args[1].split('"')[1]
+                print(args[1].split('"'))
+                self.do_update(f"{args[0]} {id_update}")
+            
         
 
 if __name__ == '__main__':
