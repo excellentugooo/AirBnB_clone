@@ -122,17 +122,18 @@ class HBNBCommand(cmd.Cmd):
             key = args[0] + "." + args[1]
             dic_t = storage.all()[key]
 
-            attr_val= args[3]
+            attr_val = args[3]
+            attr_nam = args[2]
             if attr_val[0] == '"':
                 attr_val = attr_val[1:-1]
 
-            if hasattr(dic_t, args[2]):
-                typ = type(getattr(dic_t, args[2]))
+            if hasattr(dic_t, attr_nam):
+                typ = type(getattr(dic_t, attr_nam))
                 if typ in [str, float, int]:
                     attr_val = typ(attr_val)
-                    setattr(dic_t, args[2], attr_val)
+                    setattr(dic_t, attr_nam, attr_val)
             else:
-                setattr(dic_t, args[2], attr_val)
+                setattr(dic_t, attr_nam, attr_val)
                 storage.save
 
     def default(self, arg):
