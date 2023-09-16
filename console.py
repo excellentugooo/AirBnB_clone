@@ -101,7 +101,7 @@ class HBNBCommand(cmd.Cmd):
             print("** Too many argument for all **")
             pass
 
-    def update(self, arg):
+    def do_update(self, arg):
         """Updates an instance base on its id eg
         $ update Model id field value
         Throws errors for missing arguments"""
@@ -144,16 +144,21 @@ class HBNBCommand(cmd.Cmd):
             elif args[1] == "count()":
                 count = [v for k, v in storage.all().items() if k.startswith(args[0])]
                 print(len(count))
-            elif args[1].startwith("show"):
+            elif args[1].startswith("show"):
                 id_show = args[1].split('"')[1]
                 self.do_show(f"{args[0]} {id_show}")
-            elif args[1].startwith("destroy"):
+            elif args[1].startswith("destroy"):
                 id_destroy = args[1].split('"')[1]
                 self.do_destroy(f"{args[0]} {id_destroy}")
-            elif args[1].startwith("update"):
-                id_update = args[1].split('"')[1]
-                print(args[1].split('"'))
-                self.do_update(f"{args[0]} {id_update}")
+            elif args[1].startswith("update"):
+                id_update = args[1].split('(')
+                id_update = id_update[1].split(')')
+                id_update = id_update[0].split(', ')
+
+                id_ = id_update[0].strip('"')
+                at_nam = id_update[1].strip('"')
+                at_val = id_update[2].strip('"')
+                self.do_update(f"{args[0]} {id_} {at_nam} {at_val}")
             
         
 
