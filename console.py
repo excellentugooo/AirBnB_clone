@@ -16,12 +16,12 @@ class HBNBCommand(cmd.Cmd):
     """ command line class """
     prompt = "(hbnb) "
     __classes = ["BaseModel",
-        "User",
-        "State",
-        "City",
-        "Place",
-        "Amenity",
-        "Review"]
+                 "User",
+                 "State",
+                 "City",
+                 "Place",
+                 "Amenity",
+                 "Review"]
 
     def do_quit(self, args):
         """ quit the command line
@@ -46,10 +46,10 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif args[0] not in self.__classes:
             print("** class doesn't exist **")
-        elif len(args) < 2:
-            new_obj = eval(f"{args[0]}")()
-            print(new_obj.id)
-            new_obj.save()
+        elif len(args) == 1:
+            new = eval(f"{args[0]}")()
+            print(new.id)
+            storage.save()
         else:
             print("** Too many argument for create **")
             pass
@@ -62,7 +62,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif args[0] not in self.__classes:
             print("** class doesn't exist **")
-        elif len(args) < 2:
+        elif len(args) == 1:
             print("** instance id missing **")
         elif f"{args[0]}.{args[1]}" not in storage.all():
             print("** no instance found **")
@@ -77,7 +77,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif args[0] not in self.__classes:
             print("** class doesn't exist **")
-        elif len(args) < 2:
+        elif len(args) == 1:
             print("** instance id missing **")
         elif f"{args[0]}.{args[1]}" not in storage.all():
             print("** no instance found **")
@@ -95,8 +95,9 @@ class HBNBCommand(cmd.Cmd):
             print([str(value) for value in storage.all().values()])
         elif args[0] not in self.__classes:
             print("** class doesn't exist **")
-        elif len(args) < 2:
-            print([str(v) for k, v in storage.all().items() if k.startswith(args[0])])
+        elif len(args) == 1:
+            print([str(v) for k, v in storage.all().items()
+                  if k.startswith(args[0])])
         else:
             print("** Too many argument for all **")
             pass
@@ -110,13 +111,13 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif args[0] not in self.__classes:
             print("** class doesn't exist **")
-        elif len(args) < 2:
+        elif len(args) == 1:
             print("** instance id missing **")
         elif f"{args[0]}.{args[1]}" not in storage.all():
             print("** no instance found **")
-        elif len(args) < 3:
+        elif len(args) == 2:
             print("** attribute name missing **")
-        elif len(args) < 4:
+        elif len(args) == 3:
             print("** value missing **")
         else:
             key = args[0] + "." + args[1]
@@ -134,7 +135,7 @@ class HBNBCommand(cmd.Cmd):
                     setattr(dic_t, attr_nam, attr_val)
             else:
                 setattr(dic_t, attr_nam, attr_val)
-                storage.save
+            storage.save()
 
     def default(self, arg):
         args = arg.split('.')
@@ -142,7 +143,8 @@ class HBNBCommand(cmd.Cmd):
             if args[1] == "all()":
                 self.do_all(args[0])
             elif args[1] == "count()":
-                count = [v for k, v in storage.all().items() if k.startswith(args[0])]
+                count = [v for k, v in storage.all().items()
+                         if k.startswith(args[0])]
                 print(len(count))
             elif args[1].startswith("show"):
                 id_show = args[1].split('"')[1]
@@ -151,16 +153,24 @@ class HBNBCommand(cmd.Cmd):
                 id_destroy = args[1].split('"')[1]
                 self.do_destroy(f"{args[0]} {id_destroy}")
             elif args[1].startswith("update"):
-                id_update = args[1].split('(')
-                id_update = id_update[1].split(')')
-                id_update = id_update[0].split(', ')
+                parse = args[1].split('(')
+                parse = parse[1].split(')')
+                if '{' in parse[0]:
+                    parse = parse[0].split(", {")
+                    id_update = parse[0].strip('"')
+                    new_dict = '{' + parse[1]
+                    new_dict = (eval(new_dict))
 
-                id_ = id_update[0].strip('"')
-                at_nam = id_update[1].strip('"')
-                at_val = id_update[2].strip('"')
-                self.do_update(f"{args[0]} {id_} {at_nam} {at_val}")
-            
-        
+                    for key, val in new_dict.items():
+                        self.do_update(f"{args[0]} {id_update} {key} {val}")
+                else:
+                    parse = parse[0].split(', ')
+
+                    id_update = parse[0].strip('"')
+                    at_nam = parse[1].strip('"')
+                    at_val = parse[2].strip('"')
+                    self.do_update(f"{args[0]} {id_update} {at_nam} {at_val}")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
