@@ -7,6 +7,7 @@ an object
 """
 
 import json
+from json.decoder import JSONDecodeError
 from models.base_model import BaseModel
 from models.base_model import BaseModel
 from models.user import User
@@ -48,5 +49,5 @@ class FileStorage():
                     del i["__class__"]
                     self.new(eval(cls)(**i))
 
-        except (FileNotFoundError):
+        except (FileNotFoundError, JSONDecodeError):
             return
