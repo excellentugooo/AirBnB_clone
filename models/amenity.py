@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-"""This file defines the Amenity Model
+"""
+This file defines the Amenity Model
 It inherits from the BaseModel
 """
 
